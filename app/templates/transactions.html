@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transações - FinPlan</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+            padding-top: 60px;
+    
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .transaction-list {
+            margin-top: 20px;
+        }
+        .transaction-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+        <!-- Barra de Navegação -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="{{ url_for('main.index') }}">FinPlan</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('main.transactions') }}">Transações</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('main.categories') }}">Categorias</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('main.dashboard') }}">Dashboard</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    
+        <!-- Conteúdo da Página -->
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    
+        <!-- Bootstrap JS e Dependências -->
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <div class="container">
+        <h1 class="text-center mb-4">Cadastro de Transações</h1>
+
+        <!-- Formulário de Cadastro de Transações -->
+        <div class="form-container">
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="type" class="form-label">Tipo:</label>
+                    <select class="form-select" name="type" id="type" required>
+                        <option value="income">Receita</option>
+                        <option value="expense">Despesa</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="amount" class="form-label">Valor:</label>
+                    <input type="number" class="form-control" name="amount" id="amount" step="0.01" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="category_id" class="form-label">Categoria:</label>
+                    <select class="form-select" name="category_id" id="category_id" required>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Descrição:</label>
+                    <textarea class="form-control" name="description" id="description" rows="3"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="date" class="form-label">Data:</label>
+                    <input type="date" class="form-control" name="date" id="date" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Cadastrar</button>
+            </form>
+        </div>
+
+        <!-- Lista de Transações Recentes -->
+        <div class="transaction-list">
+            <h2 class="text-center mb-4">Transações Recentes</h2>
+            <ul class="list-unstyled">
+                {% for transaction in transactions %}
+                    <li class="transaction-item">
+                        <strong>{{ transaction.date }}</strong> - {{ transaction.type }}: R$ {{ transaction.amount }}
+                        <br>
+                        <span class="text-muted">Categoria: {{ transaction.category.name if transaction.category else 'Sem categoria' }}</span>
+                        <br>
+                        <span>{{ transaction.description }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS e Dependências -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
