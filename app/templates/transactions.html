@@ -98,26 +98,32 @@
         </div>
         
  <!-- Lista de Transações Recentes -->
- <div class="transaction-list">
+ 
+<table class="table">
     <h2 class="text-center mb-4">Transações Recentes</h2>
-    <ul class="list-unstyled">
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Descrição</th>
+            <th>Categoria</th>
+            <th>Valor</th>
+        </tr>
+    </thead>
+    <tbody>
         {% for transaction in transactions %}
-            <li class="transaction-item d-flex justify-content-between align-items-center">
-                <div>
-                    <strong>{{ transaction.date }}</strong> - {{ transaction.type }}: R$ {{ transaction.amount }}
-                    <br>
-                    <span class="text-muted">Categoria: {{ transaction.category.name if transaction.category else 'Sem categoria' }}</span>
-                    <br>
-                    <span>{{ transaction.description }}</span>
-                </div>
-                <form method="POST" action="{{ url_for('main.delete_transaction', transaction_id=transaction.id) }}">
-                    <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
-                </form>
-            </li>
+        <tr>
+            <td>{{ transaction.date.strftime('%d/%m/%Y') }}</td>
+            <td>{{ transaction.description }}</td>
+            <td>{{ transaction.category.name }}</td>
+            <td>R$ {{ "%.2f"|format(transaction.amount) }}</td>
+            <th><form method="POST" action="{{ url_for('main.delete_transaction', transaction_id=transaction.id) }}">
+                <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+            </form></th>
+        </li>
+        </tr>
         {% endfor %}
-    </ul>
-</div>
-
+    </tbody>
+</table>
         
   
     <!-- Bootstrap JS e Dependências -->

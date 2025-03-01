@@ -1,6 +1,9 @@
 from flask import Blueprint, jsonify, request, render_template, redirect, url_for, flash
-from .extensions import db  # Importe o db do extensions.py
-from .models import User, Transaction, Category
+from app.extensions import db  # Importe o db do extensions.py
+from app.models import User, Transaction, Category
+from flask import session
+from app.decorators import login_required
+
 
 # Cria um Blueprint para as rotas
 main = Blueprint('main', __name__)
@@ -8,14 +11,22 @@ main = Blueprint('main', __name__)
 # Rota inicial
 @main.route('/')
 def index():
-    return render_template('index.html')
+    if "user_id" in session:
+        return redirect(url_for("main.dashboard"))  # Se logado, vai para o Dashboard
+    return redirect(url_for("auth.login"))  # Se não, vai para o Login
 
+@login_required
 @main.route('/transactions', methods=['GET', 'POST'])
 def transactions():
-    user_id = 1  # Substituir pela lógica de autenticação
+    user_id = session.get('user_id')  # Pegamos o ID do usuário logado
+
+    if not user_id:
+        flash("Erro: usuário não autenticado!", "error")
+        return redirect(url_for("auth.login"))
 
     if request.method == 'POST':
         user = User.query.get(user_id)
+        
         if not user:
             flash('Usuário não encontrado!', 'error')
             return redirect(url_for('main.transactions'))
@@ -44,12 +55,12 @@ def transactions():
         flash('Transação cadastrada com sucesso!', 'success')
         return redirect(url_for('main.transactions'))
 
-    # Se for GET, obtenha as transações e categorias
-    transactions = Transaction.query.filter_by(user_id=user_id).all()
+    # Agora buscamos as transações mais recentes primeiro
+    transactions = Transaction.query.filter_by(user_id=user_id).order_by(Transaction.date.desc()).all()
     categories = Category.query.all()
 
-    # 🔹 Passando transactions corretamente para o template
     return render_template('transactions.html', transactions=transactions, categories=categories)
+
 
 # Rota para excluir uma transação
 @main.route('/delete_transaction/<int:transaction_id>', methods=['POST'])
@@ -67,6 +78,7 @@ def delete_transaction(transaction_id):
     return redirect(url_for('main.transactions'))
 
 # Rota para listar e cadastrar categorias
+@login_required
 @main.route('/categories', methods=['GET', 'POST'])
 def categories():
     if request.method == 'POST':
@@ -108,37 +120,51 @@ def delete_category(category_id):
     return redirect(url_for('main.categories'))
 
 # Rota para o dashboard
+@login_required
 @main.route('/dashboard')
 def dashboard():
+    user_id = session.get("user_id")  # Pegando o ID do usuário autenticado
+
+    # Filtra apenas as categorias de receitas e despesas
     income_categories = Category.query.filter_by(is_income=True).all()
     expense_categories = Category.query.filter_by(is_income=False).all()
 
-    total_income = sum(t.amount for t in Transaction.query.filter(Transaction.category_id.in_([c.id for c in income_categories])).all())
-    total_expense = sum(t.amount for t in Transaction.query.filter(Transaction.category_id.in_([c.id for c in expense_categories])).all())
+    # Obtém todas as transações recentes do usuário
+    total_income = db.session.query(db.func.sum(Transaction.amount)).filter(
+        Transaction.user_id == user_id,
+        Transaction.category_id.in_([c.id for c in income_categories])
+    ).scalar() or 0  # Se não houver receitas, retorna 0
 
-    balance = total_income - total_expense
+    total_expense = db.session.query(db.func.sum(Transaction.amount)).filter(
+        Transaction.user_id == user_id,
+        Transaction.category_id.in_([c.id for c in expense_categories])
+    ).scalar() or 0  # Se não houver despesas, retorna 0
+
+    balance = total_income - total_expense  # Calcula o saldo atualizado
 
     return render_template("dashboard.html", total_income=total_income, total_expense=total_expense, balance=balance)
 
+
+@login_required
 @main.route('/categories/data')
 def categories_data():
-    user_id = 1  # Pegue o ID do usuário autenticado (mudar conforme necessário)
-    
-    # Buscar apenas categorias que NÃO são receita (is_income = False)
+    user_id = session.get("user_id")  # Agora pega o ID do usuário autenticado
+
     categories = db.session.query(
         Category.name, 
         db.func.sum(Transaction.amount).label("total")
     ).join(Transaction).filter(
         Transaction.user_id == user_id,
-        Category.is_income == False  # Filtrando apenas despesas
+        Category.is_income == False  # 🔹 Somente despesas, já que receitas são separadas
     ).group_by(Category.name).all()
 
-    # Convertendo os dados para JSON
+    # Garante que o JSON retornado está sempre atualizado
     data = {
         "labels": [category.name for category in categories],
-        "values": [category.total for category in categories]
+        "values": [float(category.total) for category in categories]  # Converte para float para evitar erros no JavaScript
     }
     
-    return jsonify(data)
+    return jsonify(data)  # 🔹 Retorna um JSON atualizado
+
 
 
