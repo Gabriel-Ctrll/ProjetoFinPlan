@@ -13,7 +13,6 @@
             background-color: #f8f9fa;
             padding: 20px;
             padding-top: 60px; /* Espaço para a navbar fixa */
-
         }
         .dashboard-container {
             background-color: white;
@@ -30,41 +29,26 @@
     </style>
 </head>
 <body>
-        <!-- Barra de Navegação -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url_for('main.index') }}">FinPlan</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.transactions') }}">Transações</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.categories') }}">Categorias</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.dashboard') }}">Dashboard</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    
-        <!-- Conteúdo da Página -->
+    <!-- Barra de Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <div class="container">
-            {% block content %}{% endblock %}
+            <a class="navbar-brand" href="{{ url_for('main.index') }}">FinPlan</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('main.transactions') }}">Transações</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('main.categories') }}">Categorias</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
+                </ul>
+            </div>
         </div>
+    </nav>
     
-        <!-- Bootstrap JS e Dependências -->
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <!-- Conteúdo da Página -->
     <div class="container">
         <h1 class="text-center mb-4">Dashboard Financeiro</h1>
-
-        <!-- Cards de Resumo -->
         <div class="row">
             <div class="col-md-4">
                 <div class="card text-white bg-success">
@@ -91,7 +75,7 @@
                 </div>
             </div>
         </div>
-
+        
         <!-- Gráficos -->
         <div class="chart-container">
             <h2 class="text-center mb-4">Gráficos</h2>
@@ -116,64 +100,58 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS e Dependências -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-
-    <!-- Script para Gráficos -->
+    <!-- Scripts -->
     <script>
         // Gráfico de Receitas vs Despesas
         const incomeExpenseCtx = document.getElementById('incomeExpenseChart').getContext('2d');
         new Chart(incomeExpenseCtx, {
             type: 'bar',
             data: {
-                labels: ['Receitas', 'Despesas'],
-                datasets: [{
-                    label: 'Valores',
-                    data: [{{ total_income }}, {{ total_expense }}],
-                    backgroundColor: [
-                        'rgba(75, 192, 192, 0.2)', // Verde para receitas
-                        'rgba(255, 99, 132, 0.2)'  // Vermelho para despesas
-                    ],
-                    borderColor: [
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(255, 99, 132, 1)'
-                    ],
-                    borderWidth: 1
-                }]
+                labels: ['Total'],
+                datasets: [
+                    {
+                        label: 'Receitas',
+                        data: [{{ total_income }}],
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Despesas',
+                        data: [{{ total_expense }}],
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }
+                ]
             },
             options: {
+                responsive: true,
                 scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+                    y: { beginAtZero: true }
                 }
             }
         });
 
         // Gráfico de Distribuição por Categoria
-        const categoryDistributionCtx = document.getElementById('categoryDistributionChart').getContext('2d');
-        new Chart(categoryDistributionCtx, {
-            type: 'pie',
-            data: {
-                labels: ['Categoria 1', 'Categoria 2', 'Categoria 3'], // Substitua pelas categorias reais
-                datasets: [{
-                    label: 'Valores',
-                    data: [30, 50, 20], // Substitua pelos valores reais
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            }
-        });
+        async function fetchCategoryData() {
+            const response = await fetch('/categories/data');
+            const data = await response.json();
+            const categoryDistributionCtx = document.getElementById('categoryDistributionChart').getContext('2d');
+            new Chart(categoryDistributionCtx, {
+                type: 'pie',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        data: data.values,
+                        backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)'],
+                        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'],
+                        borderWidth: 1
+                    }]
+                }
+            });
+        }
+        fetchCategoryData();
     </script>
 </body>
 </html>
