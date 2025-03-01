@@ -94,7 +94,7 @@
                 <div>
                     <strong>{{ category.name }}</strong> - 
                     <span class="badge {% if category.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
-                        {{ category.type }}
+                        {{ "Receita" if category.type == "income" else "Despesa" }}
                     </span>
                 </div>
                 <!-- Botão para excluir categoria -->
