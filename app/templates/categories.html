@@ -1,112 +1,183 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Categorias - FinPlan</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Categorias</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            background-color: #f8f9fa;
-            padding: 20px;
-            padding-top: 60px;
-        }
-        .form-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .category-list {
-            margin-top: 20px;
-        }
-        .category-item {
-            background-color: white;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 10px;
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
     </style>
 </head>
 <body>
-        <!-- Barra de Navegação -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url_for('main.index') }}">FinPlan</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.transactions') }}">Transações</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.categories') }}">Categorias</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.dashboard') }}">Dashboard</a>
-                        </li>
-                    </ul>
+    <div id="webcrumbs">
+        <div class="w-full flex justify-center">
+            <div class="w-[1200px] bg-gray-50 p-6 rounded-lg shadow-lg">
+                <!-- Navbar -->
+                <nav class="bg-blue-600 text-white p-4 rounded-lg mb-6 shadow-md">
+                    <div class="container mx-auto flex flex-wrap items-center justify-between">
+                        <a href="#" class="flex items-center space-x-2 font-bold text-xl">
+                            <span class="material-symbols-outlined">monetization_on</span>
+                            <span>FinPlan</span>
+                        </a>
+                        <button class="lg:hidden material-symbols-outlined hover:bg-blue-700 p-2 rounded">
+                            menu
+                        </button>
+                        <div class="hidden lg:flex lg:items-center lg:w-auto w-full" id="menu">
+                            <ul class="lg:flex lg:justify-end items-center space-x-6">
+                                <li>
+                                    <a href="{{ url_for('main.transactions') }}" class="hover:bg-blue-700 px-3 py-2 rounded transition-colors duration-200">Transações</a>
+                                </li>
+                                <li>
+                                    <a href="{{ url_for('main.categories') }}" class="bg-blue-700 px-3 py-2 rounded transition-colors duration-200">Categorias</a>
+                                </li>
+                                <li>
+                                    <a href="{{ url_for('main.dashboard') }}" class="hover:bg-blue-700 px-3 py-2 rounded transition-colors duration-200">Dashboard</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Header -->
+                <header class="mb-6">
+                    <h1 class="text-2xl font-bold">Gestão de Categorias</h1>
+                    <p class="text-gray-600">Cadastro e visualização de categorias para transações</p>
+                </header>
+
+                <!-- Main Content -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                   <!-- Formulário de Criação de Categoria -->
+<form method="post" action="{{ url_for('main.categories') }}">
+    <div class="mb-4">
+        <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Nome da Categoria</label>
+        <input
+            type="text"
+            id="name"
+            name="name"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+            placeholder="Ex: Alimentação, Transporte..."
+            required
+        />
+    </div>
+    <div class="mb-6">
+        <label for="type" class="block text-gray-700 text-sm font-medium mb-2">Tipo de Categoria</label>
+        <div class="flex space-x-4">
+            <label class="flex items-center space-x-2 cursor-pointer group">
+                <input
+                    type="radio"
+                    name="type"
+                    class="form-radio h-5 w-5 text-red-500 transition duration-150 ease-in-out group-hover:border-red-700"
+                    value="expense"
+                    required
+                />
+                <span class="text-gray-700 group-hover:text-gray-900 transition duration-150 ease-in-out flex items-center">
+                    <span class="material-symbols-outlined text-red-500 mr-1">trending_down</span>
+                    Despesa
+                </span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer group">
+                <input
+                    type="radio"
+                    name="type"
+                    class="form-radio h-5 w-5 text-green-500 transition duration-150 ease-in-out group-hover:border-green-700"
+                    value="income"
+                    required
+                />
+                <span class="text-gray-700 group-hover:text-gray-900 transition duration-150 ease-in-out flex items-center">
+                    <span class="material-symbols-outlined text-green-500 mr-1">trending_up</span>
+                    Receita
+                </span>
+            </label>
+        </div>
+    </div>
+    <div class="flex justify-end">
+        <button
+            type="submit"
+            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-1 transform hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+        >
+            <span class="material-symbols-outlined">save</span>
+            <span>Salvar Categoria</span>
+        </button>
+    </div>
+</form>
+
+
+                    <!-- Lista de Categorias Existentes -->
+                    <div class="md:col-span-2 bg-white p-5 rounded-lg shadow hover:shadow-xl transition-shadow duration-300">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-semibold text-gray-700 flex items-center">
+                                <span class="material-symbols-outlined text-blue-500 mr-2">category</span>
+                                Categorias Existentes
+                            </h2>
+                            <div class="relative">
+                                <input
+                                    type="text"
+                                    id="search-input"
+                                    placeholder="Buscar categoria..."
+                                    class="px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                />
+                                <span class="material-symbols-outlined absolute left-3 top-2.5 text-gray-400">search</span>
+                            </div>
+                        </div>
+                        <div class="border rounded-lg overflow-hidden">
+                            <div class="min-h-[400px]">
+                                <div class="grid grid-cols-4 bg-gray-100 p-3 border-b font-medium text-gray-700">
+                                    <div class="col-span-2">Nome</div>
+                                    <div class="col-span-1 text-center">Tipo</div>
+                                    <div class="col-span-1 text-center">Ações</div>
+                                </div>
+                                <ul id="categorias-list" class="divide-y divide-gray-200">
+                                    {% for category in categories %}
+                                    <li class="p-3 grid grid-cols-4 items-center hover:bg-gray-50 transition-colors duration-150">
+                                        <div class="col-span-2 flex items-center">
+                                            <span class="material-symbols-outlined text-blue-500 mr-3 bg-blue-100 p-1.5 rounded-full">category</span>
+                                            <span class="font-medium">{{ category.name }}</span>
+                                        </div>
+                                        <div class="col-span-1 text-center">
+                                            <span class="{{ 'bg-red-100 text-red-600' if category.type == 'expense' else 'bg-green-100 text-green-600' }} px-3 py-1 rounded-full text-sm font-medium flex items-center justify-center w-24 mx-auto">
+                                                <span class="material-symbols-outlined text-xs mr-1">{{ 'trending_down' if category.type == 'expense' else 'trending_up' }}</span>
+                                                {{ 'Despesa' if category.type == 'expense' else 'Receita' }}
+                                            </span>
+                                        </div>
+                                        <div class="col-span-1 text-center">
+                                            <div class="flex justify-center space-x-2">
+                                                <button class="text-blue-500 hover:text-blue-700 p-1 rounded-full hover:bg-blue-100 transition-colors duration-200">
+                                                    <span class="material-symbols-outlined">edit</span>
+                                                </button>
+                                                <form method="post" action="{{ url_for('main.delete_category', category_id=category.id) }}" style="display: inline;">
+                                                    <button
+                                                        type="submit"
+                                                        class="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-100 transition-colors duration-200"
+                                                        onclick="return confirm('Tem certeza que deseja excluir esta categoria?');"
+                                                    >
+                                                        <span class="material-symbols-outlined">delete</span>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="bg-gray-50 px-4 py-3 border-t flex items-center justify-between">
+                                <div class="text-sm text-gray-600">
+                                    Total de Categorias: <span id="total-categorias" class="font-medium">{{ categories|length }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Footer -->
+                <footer class="mt-6 text-center text-gray-500 text-sm">
+                    <p>© 2025 FinPlan - Plataforma de Gestão Financeira</p>
+                </footer>
             </div>
-        </nav>
-    
-        <!-- Conteúdo da Página -->
-        <div class="container">
-            {% block content %}{% endblock %}
         </div>
-    
-        <!-- Bootstrap JS e Dependências -->
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-    <div class="container">
-        <h1 class="text-center mb-4">Gerenciamento de Categorias</h1>
-
-        <!-- Formulário de Cadastro de Categorias -->
-        <div class="form-container">
-            <form method="POST">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Nome:</label>
-                    <input type="text" class="form-control" name="name" id="name" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="type" class="form-label">Tipo:</label>
-                    <select class="form-select" name="type" id="type" required>
-                        <option value="income">Receita</option>
-                        <option value="expense">Despesa</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Cadastrar</button>
-            </form>
-        </div>
-
-<!-- Lista de Categorias Existentes -->
-<div class="category-list">
-    <h2 class="text-center mb-4">Categorias Existentes</h2>
-    <ul class="list-unstyled">
-        {% for category in categories %}
-            <li class="category-item d-flex justify-content-between align-items-center">
-                <div>
-                    <strong>{{ category.name }}</strong> - 
-                    <span class="badge {% if category.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
-                        {{ "Receita" if category.type == "income" else "Despesa" }}
-                    </span>
-                </div>
-                <!-- Botão para excluir categoria -->
-                <form method="POST" action="{{ url_for('main.delete_category', category_id=category.id) }}">
-                    <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
-</div>
-    <!-- Bootstrap JS e Dependências -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    </div>
 </body>
 </html>
