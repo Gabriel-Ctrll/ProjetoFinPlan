@@ -81,26 +81,7 @@ def delete_transaction(transaction_id):
     flash('Transação excluída com sucesso!', 'success')
     return redirect(url_for('main.transactions'))
 
-# # Rota para listar e cadastrar categorias
-# @login_required
-# @main.route('/categories', methods=['GET', 'POST'])
-# def categories():
-#     if request.method == 'POST':
-#         # Obtenha os dados do formulário
-#         name = request.form['name']
-#         type = request.form['type']
 
-#         # Crie uma nova categoria
-#         new_category = Category(name=name, type=type)
-#         db.session.add(new_category)
-#         db.session.commit()
-
-#         flash('Categoria cadastrada com sucesso!', 'success')
-#         return redirect(url_for('main.categories'))
-
-#     # Liste as categorias existentes
-#     categories = Category.query.all()
-#     return render_template('categories.html', categories=categories)
 
 @main.route('/categories', methods=['GET', 'POST'])
 @login_required
@@ -146,31 +127,16 @@ def delete_category(category_id):
     flash('Categoria excluída com sucesso!', 'success')
     return redirect(url_for('main.categories'))
 
-# Rota para o dashboard
+@main.route('/categories/list', methods=['GET'])
 @login_required
-@main.route('/dashboard')
-def dashboard():
-    user_id = session.get("user_id")  # Pegando o ID do usuário autenticado
+def categories_list():
+    user_id = session.get('user_id')
 
-    # Filtra apenas as categorias de receitas e despesas
-    income_categories = Category.query.filter_by(is_income=True).all()
-    expense_categories = Category.query.filter_by(is_income=False).all()
+    # Busca todas as categorias do usuário
+    categories = Category.query.all()
 
-    # Obtém todas as transações recentes do usuário
-    total_income = db.session.query(db.func.sum(Transaction.amount)).filter(
-        Transaction.user_id == user_id,
-        Transaction.category_id.in_([c.id for c in income_categories])
-    ).scalar() or 0  # Se não houver receitas, retorna 0
-
-    total_expense = db.session.query(db.func.sum(Transaction.amount)).filter(
-        Transaction.user_id == user_id,
-        Transaction.category_id.in_([c.id for c in expense_categories])
-    ).scalar() or 0  # Se não houver despesas, retorna 0
-
-    balance = total_income - total_expense  # Calcula o saldo atualizado
-
-    return render_template("dashboard.html", total_income=total_income, total_expense=total_expense, balance=balance)
-
+    # Retorna um JSON com ID e Nome das categorias
+    return jsonify([{"id": c.id, "name": c.name} for c in categories])
 
 @main.route('/categories/data')
 @login_required
@@ -205,6 +171,33 @@ def categories_data():
     
     data = {"labels": labels, "values": values}
     return jsonify(data)
+
+# Rota para o dashboard
+@login_required
+@main.route('/dashboard')
+def dashboard():
+    user_id = session.get("user_id")  # Pegando o ID do usuário autenticado
+
+    # Filtra apenas as categorias de receitas e despesas
+    income_categories = Category.query.filter_by(is_income=True).all()
+    expense_categories = Category.query.filter_by(is_income=False).all()
+
+    # Obtém todas as transações recentes do usuário
+    total_income = db.session.query(db.func.sum(Transaction.amount)).filter(
+        Transaction.user_id == user_id,
+        Transaction.category_id.in_([c.id for c in income_categories])
+    ).scalar() or 0  # Se não houver receitas, retorna 0
+
+    total_expense = db.session.query(db.func.sum(Transaction.amount)).filter(
+        Transaction.user_id == user_id,
+        Transaction.category_id.in_([c.id for c in expense_categories])
+    ).scalar() or 0  # Se não houver despesas, retorna 0
+
+    balance = total_income - total_expense  # Calcula o saldo atualizado
+
+    return render_template("dashboard.html", total_income=total_income, total_expense=total_expense, balance=balance)
+
+
 
 
 @main.route('/dashboard/summary')

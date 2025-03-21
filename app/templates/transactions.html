@@ -48,33 +48,24 @@
             </div>
             <!-- O formulário pode enviar os dados para um endpoint (não incluído aqui) -->
             <form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div class="flex flex-col">
-                <label for="description" class="mb-1 text-gray-600 font-medium">Descrição</label>
-                <input type="text" id="description" placeholder="Ex: Compra de supermercado" class="border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" />
-              </div>
-              <div class="flex flex-col">
-                <label for="amount" class="mb-1 text-gray-600 font-medium">Valor (R$)</label>
-                <input type="number" id="amount" placeholder="0,00" step="0.01" min="0" class="border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" />
-              </div>
+             
+            <div class="flex flex-col">
+              <label for="amount" class="mb-1 text-gray-600 font-medium">Valor (R$)</label>
+              <input type="number" id="amount" name="amount" required step="0.01"
+                     class="border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500">
+          </div>
+
               <div class="flex flex-col">
                 <label for="category" class="mb-1 text-gray-600 font-medium">Categoria</label>
                 <select id="category" class="border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white">
-                  <option value="" disabled selected>Selecione uma categoria</option>
-                  <!-- As opções podem ser geradas dinamicamente pelo backend -->
-                  <option value="moradia">Moradia</option>
-                  <option value="alimentacao">Alimentação</option>
-                  <option value="transporte">Transporte</option>
-                  <option value="lazer">Lazer</option>
-                  <option value="saude">Saúde</option>
-                  <option value="outros">Outros</option>
-                  <option value="salario">Salário</option>
-                  <option value="investimentos">Investimentos</option>
+                    <option value="" disabled selected>Selecione uma categoria</option>
                 </select>
-              </div>
-              <div class="flex flex-col">
-                <label for="date" class="mb-1 text-gray-600 font-medium">Data</label>
-                <input type="date" id="date" class="border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" />
-              </div>
+            </div>
+            <div class="flex flex-col">
+              <label for="date" class="mb-1 text-gray-600 font-medium">Data</label>
+              <input type="date" id="date" name="date" required
+                     class="border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500">
+          </div>
               <div class="flex flex-col md:col-span-2 lg:col-span-3">
                 <label for="notes" class="mb-1 text-gray-600 font-medium">Observações (opcional)</label>
                 <input type="text" id="notes" placeholder="Adicione notas sobre esta transação" class="border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" />
@@ -92,24 +83,7 @@
                 </div>
               </div>
             </form>
-            <!-- Seção de seleção de transação: Despesa/Receita -->
-            <div class="mt-4 grid grid-cols-2 gap-4">
-              <div class="flex items-center">
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="radio" name="transaction_type" class="sr-only peer" checked value="expense" />
-                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
-                  <span class="ml-3 text-sm font-medium text-gray-700">Despesa</span>
-                </label>
-              </div>
-              <div class="flex items-center">
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="radio" name="transaction_type" class="sr-only peer" value="income" />
-                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-                  <span class="ml-3 text-sm font-medium text-gray-700">Receita</span>
-                </label>
-              </div>
-            </div>
-          </div>
+
 
           <!-- Seção de Últimas Transações -->
           <div class="mt-6 p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
@@ -145,181 +119,6 @@
 
     <!-- Importação do Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Configuração do Tailwind -->
-    <script>
-      tailwind.config = {
-        content: ["./src/**/*.{html,js}"],
-        theme: {
-          name: "Bluewave",
-          fontFamily: {
-            sans: [
-              "Open Sans",
-              "ui-sans-serif",
-              "system-ui",
-              "sans-serif",
-              '"Apple Color Emoji"',
-              '"Segoe UI Emoji"',
-              '"Segoe UI Symbol"',
-              '"Noto Color Emoji"'
-            ]
-          },
-          extend: {
-            fontFamily: {
-              title: [
-                "Lato",
-                "ui-sans-serif",
-                "system-ui",
-                "sans-serif",
-                '"Apple Color Emoji"',
-                '"Segoe UI Emoji"',
-                '"Segoe UI Symbol"',
-                '"Noto Color Emoji"'
-              ],
-              body: [
-                "Open Sans",
-                "ui-sans-serif",
-                "system-ui",
-                "sans-serif",
-                '"Apple Color Emoji"',
-                '"Segoe UI Emoji"',
-                '"Segoe UI Symbol"',
-                '"Noto Color Emoji"'
-              ]
-            },
-            colors: {
-              neutral: {
-                50: "#f7f7f7",
-                100: "#eeeeee",
-                200: "#e0e0e0",
-                300: "#cacaca",
-                400: "#b1b1b1",
-                500: "#999999",
-                600: "#7f7f7f",
-                700: "#676767",
-                800: "#545454",
-                900: "#464646",
-                950: "#282828"
-              },
-              primary: {
-                50: "#f3f1ff",
-                100: "#e9e5ff",
-                200: "#d5cfff",
-                300: "#b7a9ff",
-                400: "#9478ff",
-                500: "#7341ff",
-                600: "#631bff",
-                700: "#611bf8",
-                800: "#4607d0",
-                900: "#3c08aa",
-                950: "#220174",
-                DEFAULT: "#611bf8"
-              }
-            }
-          },
-          fontSize: {
-            xs: ["12px", { lineHeight: "19.2px" }],
-            sm: ["14px", { lineHeight: "21px" }],
-            base: ["16px", { lineHeight: "25.6px" }],
-            lg: ["18px", { lineHeight: "27px" }],
-            xl: ["20px", { lineHeight: "28px" }],
-            "2xl": ["24px", { lineHeight: "31.2px" }],
-            "3xl": ["30px", { lineHeight: "36px" }],
-            "4xl": ["36px", { lineHeight: "41.4px" }],
-            "5xl": ["48px", { lineHeight: "52.8px" }],
-            "6xl": ["60px", { lineHeight: "66px" }],
-            "7xl": ["72px", { lineHeight: "75.6px" }],
-            "8xl": ["96px", { lineHeight: "100.8px" }],
-            "9xl": ["128px", { lineHeight: "134.4px" }]
-          },
-          borderRadius: {
-            none: "0px",
-            sm: "6px",
-            DEFAULT: "12px",
-            md: "18px",
-            lg: "24px",
-            xl: "36px",
-            "2xl": "48px",
-            "3xl": "72px",
-            full: "9999px"
-          },
-          spacing: {
-            0: "0px",
-            1: "4px",
-            2: "8px",
-            3: "12px",
-            4: "16px",
-            5: "20px",
-            6: "24px",
-            7: "28px",
-            8: "32px",
-            9: "36px",
-            10: "40px",
-            11: "44px",
-            12: "48px",
-            14: "56px",
-            16: "64px",
-            20: "80px",
-            24: "96px",
-            28: "112px",
-            32: "128px",
-            36: "144px",
-            40: "160px",
-            44: "176px",
-            48: "192px",
-            52: "208px",
-            56: "224px",
-            60: "240px",
-            64: "256px",
-            72: "288px",
-            80: "320px",
-            96: "384px",
-            px: "1px",
-            0.5: "2px",
-            1.5: "6px",
-            2.5: "10px",
-            3.5: "14px"
-          }
-        },
-        plugins: [],
-        important: "#webcrumbs"
-      };
-    </script>
-    <script>
-      // Função para buscar e renderizar as últimas transações
-      async function renderRecentTransactions() {
-          try {
-              const response = await fetch('/dashboard/transactions_data');
-              if (!response.ok) {
-                  throw new Error(`Erro na requisição: ${response.status}`);
-              }
-              const transactions = await response.json();
-              const transactionsList = document.querySelector('#transactions-list');
-              transactionsList.innerHTML = ''; // Limpa a lista antes de adicionar novos itens
-
-              transactions.forEach(tx => {
-                  const isIncome = tx.is_income;
-                  // Para simplificar, não usamos ícones; apenas exibimos o texto da categoria
-                  const amountSign = isIncome ? '+' : '-';
-
-                  const transactionItem = document.createElement('li');
-                  transactionItem.className = 'py-3 flex justify-between items-center hover:bg-gray-50 rounded px-2 transition-colors duration-200';
-                  transactionItem.innerHTML = `
-                      <div class="flex items-center">
-                          <div>
-                              <p class="font-medium">${tx.description}</p>
-                              <p class="text-sm text-gray-500">${new Date(tx.date).toLocaleDateString('pt-BR')} - ${tx.category}</p>
-                          </div>
-                      </div>
-                      <span class="font-medium px-3 py-1 rounded-full">${amountSign}R$ ${Math.abs(tx.amount).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
-                  `;
-                  transactionsList.appendChild(transactionItem);
-              });
-          } catch (error) {
-              console.error("Erro ao buscar transações recentes:", error);
-          }
-      }
-      // Chama a função para carregar as transações recentes
-      renderRecentTransactions();
-    </script>
+    <script src="{{ url_for('static', filename='js/transactions.js') }}"></script>
   </body>
 </html>
