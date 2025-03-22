@@ -1,16 +1,5 @@
-from .extensions import db  # Importe o db do extensions.py
-
-class User(db.Model):
-    __tablename__ = "users"
-
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), nullable=False, unique=True)
-    email = db.Column(db.String(100), nullable=False, unique=True)
-    password_hash= db.Column(db.String(256), nullable=False)  # Nome correto do campo de senha
-
-    # Relacionamentos
-    transactions = db.relationship("Transaction", backref="user", lazy=True)
-    categories = db.relationship("Category", backref="user", lazy=True)
+from app.extensions import db
+from datetime import datetime
 
 class Transaction(db.Model):
     __tablename__ = "transactions"
@@ -19,10 +8,12 @@ class Transaction(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=False)
     amount = db.Column(db.Numeric(10, 2), nullable=False)
-    description = db.Column(db.Text)
+    description = db.Column(db.String(100), nullable=False)
     date = db.Column(db.Date, nullable=False)
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Transaction {self.description}: {self.amount}>'
 
 class Category(db.Model):
     __tablename__ = "categories"
@@ -34,3 +25,6 @@ class Category(db.Model):
     is_income = db.Column(db.Boolean, nullable=False)  
 
     transactions = db.relationship("Transaction", backref="category", lazy=True)
+    
+    def __repr__(self):
+        return f'<Category {self.name}>'

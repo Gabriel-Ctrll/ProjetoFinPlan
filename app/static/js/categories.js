@@ -16,4 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // Atualize a URL
+    const deleteUrl = "{{ url_for('main.delete_category', category_id=':id') }}".replace(':id', categoryId);
 });
