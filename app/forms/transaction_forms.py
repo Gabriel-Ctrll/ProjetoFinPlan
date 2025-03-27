@@ -14,7 +14,8 @@ class TransactionForm(FlaskForm):
     ])
     category = SelectField('Categoria', coerce=int, validators=[
         DataRequired('Categoria é obrigatória')
-    ])
+    ], choices=[]) # Inicializamos com uma lista vazia para evitar None
+    
     date = DateField('Data', validators=[
         DataRequired('Data é obrigatória')
     ], format='%Y-%m-%d')

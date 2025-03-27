@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_required, current_user
 from app.extensions import db
-from app.models.finance import Transaction, Category
+from app.models.finance import Transaction, Category  # Removido: Bank
 from app.forms.transaction_forms import TransactionForm, CategoryForm
 from datetime import datetime, date
 from sqlalchemy import extract, func
@@ -19,10 +19,16 @@ def dashboard():
 @main_bp.route('/transactions', methods=['GET', 'POST'])
 @login_required
 def transactions():
-    form = TransactionForm()
-    
-    # Carrega as categorias do usuário atual
+    # Verificar se existem categorias
     categories = Category.query.filter_by(user_id=current_user.id).all()
+    
+    # Verificar se existem categorias antes de mostrar o formulário
+    if not categories:
+        flash('Você precisa cadastrar pelo menos uma categoria antes de adicionar transações.', 'error')
+        return redirect(url_for('main.categories'))
+    
+    # Inicializar com uma categoria padrão para evitar o erro
+    form = TransactionForm()
     form.category.choices = [(c.id, c.name) for c in categories]
     
     if form.validate_on_submit():
@@ -37,8 +43,10 @@ def transactions():
                 description=form.description.data,
                 amount=form.amount.data,
                 category_id=form.category.data,
+                # Removido: bank_id
                 date=form.date.data,
-                user_id=current_user.id
+                user_id=current_user.id,
+                notes=form.notes.data if hasattr(form, 'notes') else None
             )
             
             db.session.add(transaction)

@@ -7,10 +7,13 @@ class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=False)
+    # Removido: bank_id
     amount = db.Column(db.Numeric(10, 2), nullable=False)
     description = db.Column(db.String(100), nullable=False)
     date = db.Column(db.Date, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    notes = db.Column(db.Text)  # Coluna adicionada pelo script add_notes_column.py
 
     def __repr__(self):
         return f'<Transaction {self.description}: {self.amount}>'
@@ -28,3 +31,5 @@ class Category(db.Model):
     
     def __repr__(self):
         return f'<Category {self.name}>'
+
+# Removida a classe Bank
