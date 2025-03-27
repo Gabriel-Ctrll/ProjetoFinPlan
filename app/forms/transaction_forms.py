@@ -4,6 +4,13 @@ from wtforms import StringField, DecimalField, SelectField, DateField, TextAreaF
 from wtforms.validators import DataRequired, Length, NumberRange
 
 class TransactionForm(FlaskForm):
+    """
+    Formulário para criação e edição de transações.
+    
+    Este formulário coleta os dados necessários para criar ou editar
+    uma transação financeira, incluindo descrição, valor, categoria,
+    data e observações opcionais.
+    """
     description = StringField('Descrição', validators=[
         DataRequired('Descrição é obrigatória'), 
         Length(max=100, message='Descrição deve ter no máximo 100 caracteres')
@@ -24,6 +31,12 @@ class TransactionForm(FlaskForm):
     ])
 
 class CategoryForm(FlaskForm):
+    """
+    Formulário para criação e edição de categorias.
+    
+    Este formulário coleta os dados necessários para criar ou editar
+    uma categoria, incluindo nome e tipo (receita ou despesa).
+    """
     name = StringField('Nome', validators=[
         DataRequired('Nome é obrigatório'),
         Length(max=50, message='Nome deve ter no máximo 50 caracteres')
