@@ -7,6 +7,7 @@ from datetime import datetime, date
 from sqlalchemy import extract, func
 import calendar
 from dateutil.relativedelta import relativedelta
+from app.services.financial_analysis import FinancialAnalysisService  # Importar o serviço
 
 main_bp = Blueprint('main', __name__)
 
@@ -265,11 +266,17 @@ def financial_data():
         incomes = []
         expenses = []
         
+        # Mapeamento de meses em português (abreviado)
+        meses_abrev = {
+            1: "Jan", 2: "Fev", 3: "Mar", 4: "Abr", 5: "Mai", 6: "Jun",
+            7: "Jul", 8: "Ago", 9: "Set", 10: "Out", 11: "Nov", 12: "Dez"
+        }
+        
         # Gerar dados para os últimos 6 meses
         for i in range(5, -1, -1):
             # Calcula o mês (atual - i)
             target_date = today - relativedelta(months=i)
-            month_name = calendar.month_name[target_date.month][:3]  # Primeiras 3 letras do mês
+            month_name = meses_abrev[target_date.month]  # Nome abreviado do mês em português
             months.append(f"{month_name}/{target_date.year}")
             
             # Receitas do mês (usando func.coalesce para garantir valores zero em vez de NULL)
@@ -374,3 +381,62 @@ def transactions_data_table():
     except Exception as e:
         print(f"Erro ao buscar dados de transações: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+@main_bp.route('/monthly-analysis', methods=['GET', 'POST'])
+@login_required
+def monthly_analysis():
+    """Rota para a página de análise mensal com PyTorch"""
+    selected_date = None
+    
+    if request.method == 'POST':
+        # Obter a data selecionada pelo usuário
+        month = int(request.form.get('month', date.today().month))
+        year = int(request.form.get('year', date.today().year))
+        selected_date = date(year, month, 1)
+    
+    # Inicializar o serviço de análise financeira
+    analysis_service = FinancialAnalysisService()
+    
+    # Obter dados de comparação de meses
+    if selected_date is None:
+        analysis_data = analysis_service.compare_months(current_user.id)
+    else:
+        analysis_data = analysis_service.compare_months(current_user.id, selected_date)
+    
+    # Lista de meses para o seletor em português
+    meses_em_portugues = [
+        (1, "Janeiro"), (2, "Fevereiro"), (3, "Março"), 
+        (4, "Abril"), (5, "Maio"), (6, "Junho"),
+        (7, "Julho"), (8, "Agosto"), (9, "Setembro"),
+        (10, "Outubro"), (11, "Novembro"), (12, "Dezembro")
+    ]
+    
+    # Lista de anos para o seletor (últimos 5 anos)
+    current_year = date.today().year
+    years = list(range(current_year - 4, current_year + 1))
+    
+    return render_template(
+        'monthly_analysis.html', 
+        analysis_data=analysis_data,
+        months=meses_em_portugues,
+        years=years,
+        selected_month=selected_date.month if selected_date else date.today().month,
+        selected_year=selected_date.year if selected_date else date.today().year
+    )
+
+@main_bp.route('/api/monthly-analysis', methods=['POST'])
+@login_required
+def api_monthly_analysis():
+    """API para obter dados de análise mensal em formato JSON"""
+    data = request.json
+    month = int(data.get('month', date.today().month))
+    year = int(data.get('year', date.today().year))
+    selected_date = date(year, month, 1)
+    
+    # Inicializar o serviço de análise financeira
+    analysis_service = FinancialAnalysisService()
+    
+    # Obter dados de comparação de meses
+    analysis_data = analysis_service.compare_months(current_user.id, selected_date)
+    
+    return jsonify(analysis_data)

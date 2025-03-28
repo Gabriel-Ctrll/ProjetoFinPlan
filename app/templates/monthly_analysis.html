@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+
+{% block title %}Análise Mensal | FinPlan{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6">Análise Mensal com PyTorch</h1>
+    
+    <!-- Seletor de Mês e Ano -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4">Selecione o Período</h2>
+        <form method="POST" action="{{ url_for('main.monthly_analysis') }}" class="flex flex-wrap gap-4 items-end">
+            {{ form.csrf_token }}
+            <div class="w-full md:w-1/3">
+                <label for="month" class="block text-sm font-medium text-gray-700 mb-1">Mês</label>
+                <select id="month" name="month" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    {% for month_num, month_name in months %}
+                        <option value="{{ month_num }}" {% if month_num == selected_month %}selected{% endif %}>{{ month_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="w-full md:w-1/3">
+                <label for="year" class="block text-sm font-medium text-gray-700 mb-1">Ano</label>
+                <select id="year" name="year" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    {% for year in years %}
+                        <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="w-full md:w-1/3">
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md">
+                    Analisar
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Comparativo de Meses -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <!-- Mês Atual -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">{{ analysis_data.current_month.name }}</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-green-50 p-4 rounded-md">
+                    <h3 class="text-sm text-green-700 font-medium">Receitas</h3>
+                    <p class="text-2xl font-bold text-green-600">R$ {{ "%.2f"|format(analysis_data.current_month.data.income)|replace('.', ',') }}</p>
+                </div>
+                <div class="bg-red-50 p-4 rounded-md">
+                    <h3 class="text-sm text-red-700 font-medium">Despesas</h3>
+                    <p class="text-2xl font-bold text-red-600">R$ {{ "%.2f"|format(analysis_data.current_month.data.expense)|replace('.', ',') }}</p>
+                </div>
+            </div>
+            <div class="mt-4 p-4 rounded-md {{ 'bg-green-50' if analysis_data.current_month.data.balance >= 0 else 'bg-red-50' }}">
+                <h3 class="text-sm {{ 'text-green-700' if analysis_data.current_month.data.balance >= 0 else 'text-red-700' }} font-medium">Saldo</h3>
+                <p class="text-2xl font-bold {{ 'text-green-600' if analysis_data.current_month.data.balance >= 0 else 'text-red-600' }}">
+                    R$ {{ "%.2f"|format(analysis_data.current_month.data.balance)|replace('.', ',') }}
+                </p>
+            </div>
+            
+            <!-- Categorias do Mês Atual -->
+            <div class="mt-6">
+                <h3 class="text-lg font-medium mb-2">Detalhamento por Categoria</h3>
+                <div class="space-y-2 mt-4 max-h-60 overflow-y-auto">
+                    {% for category in analysis_data.current_month.categories %}
+                        <div class="flex justify-between items-center p-2 rounded-md {{ 'bg-green-50' if category.is_income else 'bg-red-50' }}">
+                            <span class="font-medium">{{ category.name }}</span>
+                            <span class="{{ 'text-green-600' if category.is_income else 'text-red-600' }} font-bold">
+                                R$ {{ "%.2f"|format(category.amount)|replace('.', ',') }}
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mês Anterior -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">{{ analysis_data.previous_month.name }}</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-green-50 p-4 rounded-md">
+                    <h3 class="text-sm text-green-700 font-medium">Receitas</h3>
+                    <p class="text-2xl font-bold text-green-600">R$ {{ "%.2f"|format(analysis_data.previous_month.data.income)|replace('.', ',') }}</p>
+                </div>
+                <div class="bg-red-50 p-4 rounded-md">
+                    <h3 class="text-sm text-red-700 font-medium">Despesas</h3>
+                    <p class="text-2xl font-bold text-red-600">R$ {{ "%.2f"|format(analysis_data.previous_month.data.expense)|replace('.', ',') }}</p>
+                </div>
+            </div>
+            <div class="mt-4 p-4 rounded-md {{ 'bg-green-50' if analysis_data.previous_month.data.balance >= 0 else 'bg-red-50' }}">
+                <h3 class="text-sm {{ 'text-green-700' if analysis_data.previous_month.data.balance >= 0 else 'text-red-700' }} font-medium">Saldo</h3>
+                <p class="text-2xl font-bold {{ 'text-green-600' if analysis_data.previous_month.data.balance >= 0 else 'text-red-600' }}">
+                    R$ {{ "%.2f"|format(analysis_data.previous_month.data.balance)|replace('.', ',') }}
+                </p>
+            </div>
+            
+            <!-- Categorias do Mês Anterior -->
+            <div class="mt-6">
+                <h3 class="text-lg font-medium mb-2">Detalhamento por Categoria</h3>
+                <div class="space-y-2 mt-4 max-h-60 overflow-y-auto">
+                    {% for category in analysis_data.previous_month.categories %}
+                        <div class="flex justify-between items-center p-2 rounded-md {{ 'bg-green-50' if category.is_income else 'bg-red-50' }}">
+                            <span class="font-medium">{{ category.name }}</span>
+                            <span class="{{ 'text-green-600' if category.is_income else 'text-red-600' }} font-bold">
+                                R$ {{ "%.2f"|format(category.amount)|replace('.', ',') }}
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Análise de Tendência -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4">Análise de Tendência (PyTorch)</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Tendência de Receitas -->
+            <div class="bg-gray-50 p-4 rounded-md">
+                <h3 class="text-sm font-medium mb-2">Tendência de Receitas</h3>
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold {{ 'text-green-600' if analysis_data.trend_analysis.income_trend_percentage >= 0 else 'text-red-600' }}">
+                        {{ "%.1f"|format(analysis_data.trend_analysis.income_trend_percentage)|replace('.', ',') }}%
+                    </span>
+                    <span class="ml-2">
+                        {% if analysis_data.trend_analysis.income_trend_percentage > 0 %}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                            </svg>
+                        {% elif analysis_data.trend_analysis.income_trend_percentage < 0 %}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        {% else %}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14" />
+                            </svg>
+                        {% endif %}
+                    </span>
+                </div>
+                <p class="text-sm text-gray-600 mt-2">
+                    {% if analysis_data.trend_analysis.income_trend_percentage > 5 %}
+                        Ótimo progresso nas receitas!
+                    {% elif analysis_data.trend_analysis.income_trend_percentage > 0 %}
+                        Leve aumento nas receitas.
+                    {% elif analysis_data.trend_analysis.income_trend_percentage == 0 %}
+                        Receitas estáveis.
+                    {% else %}
+                        Queda nas receitas. Considere aumentar fontes de renda.
+                    {% endif %}
+                </p>
+            </div>
+            
+            <!-- Tendência de Despesas -->
+            <div class="bg-gray-50 p-4 rounded-md">
+                <h3 class="text-sm font-medium mb-2">Tendência de Despesas</h3>
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold {{ 'text-red-600' if analysis_data.trend_analysis.expense_trend_percentage >= 0 else 'text-green-600' }}">
+                        {{ "%.1f"|format(analysis_data.trend_analysis.expense_trend_percentage)|replace('.', ',') }}%
+                    </span>
+                    <span class="ml-2">
+                        {% if analysis_data.trend_analysis.expense_trend_percentage > 0 %}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                            </svg>
+                        {% elif analysis_data.trend_analysis.expense_trend_percentage < 0 %}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        {% else %}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14" />
+                            </svg>
+                        {% endif %}
+                    </span>
+                </div>
+                <p class="text-sm text-gray-600 mt-2">
+                    {% if analysis_data.trend_analysis.expense_trend_percentage > 5 %}
+                        Aumento significativo nos gastos. Considere revisar seu orçamento.
+                    {% elif analysis_data.trend_analysis.expense_trend_percentage > 0 %}
+                        Leve aumento nos gastos. Fique atento.
+                    {% elif analysis_data.trend_analysis.expense_trend_percentage == 0 %}
+                        Gastos estáveis.
+                    {% else %}
+                        Redução nos gastos. Excelente controle financeiro!
+                    {% endif %}
+                </p>
+            </div>
+            
+            <!-- Previsão para o Próximo Mês -->
+            <div class="bg-gray-50 p-4 rounded-md">
+                <h3 class="text-sm font-medium mb-2">Previsão para o Próximo Mês</h3>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-green-600">Receitas:</span>
+                        <span class="font-medium">R$ {{ "%.2f"|format(analysis_data.trend_analysis.next_month_prediction.income)|replace('.', ',') }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-red-600">Despesas:</span>
+                        <span class="font-medium">R$ {{ "%.2f"|format(analysis_data.trend_analysis.next_month_prediction.expense)|replace('.', ',') }}</span>
+                    </div>
+                    <div class="flex justify-between border-t pt-2">
+                        <span class="{{ 'text-green-600' if analysis_data.trend_analysis.next_month_prediction.balance >= 0 else 'text-red-600' }}">Saldo Previsto:</span>
+                        <span class="font-bold {{ 'text-green-600' if analysis_data.trend_analysis.next_month_prediction.balance >= 0 else 'text-red-600' }}">
+                            R$ {{ "%.2f"|format(analysis_data.trend_analysis.next_month_prediction.balance)|replace('.', ',') }}
+                        </span>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">Baseado em modelo neural PyTorch</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recomendações Financeiras -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold mb-4">Recomendações Baseadas na Análise</h2>
+        
+        <div class="space-y-4">
+            {% if analysis_data.trend_analysis.income_trend_percentage < 0 %}
+                <div class="bg-yellow-50 p-4 rounded-md border-l-4 border-yellow-400">
+                    <h3 class="text-sm font-medium text-yellow-800">Atenção às Receitas</h3>
+                    <p class="text-sm text-yellow-700 mt-1">
+                        Suas receitas diminuíram {{ "%.1f"|format(abs(analysis_data.trend_analysis.income_trend_percentage))|replace('.', ',') }}% em comparação com o mês anterior.
+                        Considere explorar novas fontes de renda ou revisar suas estratégias atuais.
+                    </p>
+                </div>
+            {% endif %}
+            
+            {% if analysis_data.trend_analysis.expense_trend_percentage > 0 %}
+                <div class="bg-yellow-50 p-4 rounded-md border-l-4 border-yellow-400">
+                    <h3 class="text-sm font-medium text-yellow-800">Atenção às Despesas</h3>
+                    <p class="text-sm text-yellow-700 mt-1">
+                        Suas despesas aumentaram {{ "%.1f"|format(analysis_data.trend_analysis.expense_trend_percentage)|replace('.', ',') }}% em comparação com o mês anterior.
+                        Identifique categorias com maior aumento e considere estratégias de redução.
+                    </p>
+                </div>
+            {% endif %}
+            
+            {% if analysis_data.trend_analysis.next_month_prediction.balance < 0 %}
+                <div class="bg-red-50 p-4 rounded-md border-l-4 border-red-400">
+                    <h3 class="text-sm font-medium text-red-800">Alerta de Saldo Negativo</h3>
+                    <p class="text-sm text-red-700 mt-1">
+                        Nossa análise prevê um saldo negativo para o próximo mês. Considere ajustar seu orçamento
+                        para evitar problemas financeiros.
+                    </p>
+                </div>
+            {% endif %}
+            
+            {% if analysis_data.trend_analysis.income_trend_percentage >= 0 and analysis_data.trend_analysis.expense_trend_percentage <= 0 %}
+                <div class="bg-green-50 p-4 rounded-md border-l-4 border-green-400">
+                    <h3 class="text-sm font-medium text-green-800">Ótimo Progresso</h3>
+                    <p class="text-sm text-green-700 mt-1">
+                        Parabéns! Você está aumentando suas receitas e controlando suas despesas.
+                        Continue com essa estratégia para melhorar ainda mais sua saúde financeira.
+                    </p>
+                </div>
+            {% endif %}
+            
+            <!-- Sempre mostra esta recomendação -->
+            <div class="bg-blue-50 p-4 rounded-md border-l-4 border-blue-400">
+                <h3 class="text-sm font-medium text-blue-800">Recomendação com IA</h3>
+                <p class="text-sm text-blue-700 mt-1">
+                    Nosso modelo de aprendizado de máquina analisou seus dados financeiros 
+                    e sugere que você {% if analysis_data.trend_analysis.next_month_prediction.balance < 0 %}
+                    reduza suas despesas em pelo menos R$ {{ "%.2f"|format(abs(analysis_data.trend_analysis.next_month_prediction.balance))|replace('.', ',') }}
+                    {% elif analysis_data.trend_analysis.expense_trend_percentage > 5 %}
+                    analise categorias com maior aumento nos gastos e corte despesas não essenciais
+                    {% elif analysis_data.trend_analysis.income_trend_percentage < 0 %}
+                    busque formas de aumentar sua renda ou renegociar dívidas
+                    {% else %}
+                    continue monitorando seus gastos e considere investir o excedente de caixa
+                    {% endif %}.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Adicionar script para gráficos (opcional, pode ser implementado depois) -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Código para inicializar gráficos poderia ser adicionado aqui
+    });
+</script>
+{% endblock %} 
