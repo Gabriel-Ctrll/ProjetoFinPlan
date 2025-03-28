@@ -139,5 +139,3 @@ Se você tiver alguma dúvida ou sugestão, entre em contato:
 - Aos usuários do FinPlan por ajudarem a melhorar o projeto com feedbacks valiosos.
 
 ---
-
-Esse README cobre os principais aspectos do projeto. Se precisar de mais detalhes ou ajustes, é só me avisar! 😊
