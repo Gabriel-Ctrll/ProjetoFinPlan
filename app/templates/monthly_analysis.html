@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-6">Análise Mensal com PyTorch</h1>
+    <h1 class="text-3xl font-bold mb-6">Análise Mensal</h1>
     
     <!-- Seletor de Mês e Ano -->
     <div class="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -112,7 +112,7 @@
     
     <!-- Análise de Tendência -->
     <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-4">Análise de Tendência (PyTorch)</h2>
+        <h2 class="text-xl font-semibold mb-4">Análise de Tendência</h2>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Tendência de Receitas -->
@@ -206,7 +206,7 @@
                         </span>
                     </div>
                 </div>
-                <p class="text-xs text-gray-500 mt-2">Baseado em modelo neural PyTorch</p>
+                <p class="text-xs text-gray-500 mt-2">Baseado em análise preditiva</p>
             </div>
         </div>
     </div>
@@ -260,7 +260,7 @@
             <div class="bg-blue-50 p-4 rounded-md border-l-4 border-blue-400">
                 <h3 class="text-sm font-medium text-blue-800">Recomendação com IA</h3>
                 <p class="text-sm text-blue-700 mt-1">
-                    Nosso modelo de aprendizado de máquina analisou seus dados financeiros 
+                    Nosso modelo de análise inteligente processou seus dados financeiros 
                     e sugere que você {% if analysis_data.trend_analysis.next_month_prediction.balance < 0 %}
                     reduza suas despesas em pelo menos R$ {{ "%.2f"|format(abs(analysis_data.trend_analysis.next_month_prediction.balance))|replace('.', ',') }}
                     {% elif analysis_data.trend_analysis.expense_trend_percentage > 5 %}
