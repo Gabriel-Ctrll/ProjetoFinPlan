@@ -71,6 +71,18 @@ def create_app(config_object="app.config.DevelopmentConfig"):
         """
         return {'form': FlaskForm()}
     
+    @app.context_processor
+    def utility_processor():
+        """
+        Injetar funções Python úteis para templates.
+        
+        Returns:
+            dict: Um dicionário com funções úteis.
+        """
+        return {
+            'abs': abs,  # Permite usar abs() nos templates
+        }
+    
     @login_manager.user_loader
     def load_user(user_id):
         """
