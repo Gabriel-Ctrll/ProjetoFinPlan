@@ -41,14 +41,21 @@
         {% endwith %}
 
         <form method="POST">
+            {{ form.hidden_tag() }}
+            {{ form.csrf_token }}
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
+                {{ form.email(class="form-control", id="email", required=true) }}
             </div>
 
             <div class="mb-3">
                 <label for="password" class="form-label">Senha</label>
-                <input type="password" class="form-control" id="password" name="password" required>
+                {{ form.password(class="form-control", id="password", required=true) }}
+            </div>
+
+            <div class="mb-3 form-check">
+                {{ form.remember(class="form-check-input", id="remember") }}
+                <label class="form-check-label" for="remember">Lembrar-me</label>
             </div>
 
             <button type="submit" class="btn btn-primary w-100">Entrar</button>

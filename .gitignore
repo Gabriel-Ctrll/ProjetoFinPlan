@@ -1,0 +1,53 @@
+# Ambiente virtual
+.venv/
+venv/
+ENV/
+
+# Arquivos Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Arquivos de banco de dados
+*.sqlite
+*.db
+
+# Arquivos de ambiente
+.env
+.flaskenv
+
+# Logs
+logs/
+*.log
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Cache do pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db 
