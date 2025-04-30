@@ -1,0 +1,29 @@
+<nav class="bg-blue-600 text-white p-4 shadow-md">
+    <div class="container mx-auto flex flex-wrap items-center justify-between">
+      <a href="{{ url_for('main.dashboard') }}" class="flex items-center space-x-2 font-bold text-xl">
+        <span class="material-symbols-outlined">monetization_on</span>
+        <span>FinPlan</span>
+      </a>
+      
+      <button class="lg:hidden material-symbols-outlined hover:bg-blue-700 p-2 rounded" id="menuButton">
+        menu
+      </button>
+      
+      <div class="hidden lg:flex lg:items-center lg:w-auto w-full" id="menu">
+        <ul class="lg:flex lg:justify-end items-center space-x-6">
+          <li><a href="{{ url_for('main.transactions') }}" class="hover:bg-blue-700 px-3 py-2 rounded transition-colors duration-200">Transações</a></li>
+          <li><a href="{{ url_for('main.categories') }}" class="hover:bg-blue-700 px-3 py-2 rounded transition-colors duration-200">Categorias</a></li>
+          <li><a href="{{ url_for('main.dashboard') }}" class="hover:bg-blue-700 px-3 py-2 rounded transition-colors duration-200">Dashboard</a></li>
+          <li><a href="{{ url_for('main.monthly_analysis') }}" class="hover:bg-blue-700 px-3 py-2 rounded transition-colors duration-200">Análise Mensal</a></li>
+          
+          {% if current_user.is_authenticated %}
+          <li>
+            <a href="{{ url_for('auth.logout') }}" class="bg-blue-800 hover:bg-blue-900 px-3 py-2 rounded transition-colors duration-200">
+              Sair
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
