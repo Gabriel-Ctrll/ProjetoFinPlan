@@ -10,12 +10,13 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://finplan_user:123@localhost:5232/finplan_db'
+    # Use SQLite para desenvolvimento (mais fácil) ou PostgreSQL se configurado
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///finplan_dev.db'
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://finplan_user:123@localhost:5232/finplan_db'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or 'sqlite:///finplan_test.db'
     WTF_CSRF_ENABLED = False
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = os.environ.get('postgresql://finplan_user:123@localhost:5232/finplan_db')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'postgresql://finplan_user:123@localhost:5432/finplan_db'

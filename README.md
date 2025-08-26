@@ -67,10 +67,12 @@ ProjetoFinPlan/
 
 - **Backend**: Python, Flask
 - **Frontend**: HTML, CSS, JavaScript, Tailwind CSS
-- **Banco de Dados**: SQLite/SQLAlchemy 
+- **Banco de Dados**: PostgreSQL/SQLAlchemy 
 - **Gráficos**: ApexCharts.js
 - **Autenticação**: Flask-Login
 - **Formulários**: Flask-WTF
+- **Machine Learning**: PyTorch
+- **Análise de Dados**: Pandas, NumPy
 
 ## Modelos de Dados
 
@@ -128,16 +130,44 @@ Representa uma categoria para classificar transações.
 
 ## Como Executar o Projeto
 
+### Pré-requisitos
+- Python 3.8 ou superior
+- PostgreSQL instalado e configurado
+- pip (gerenciador de pacotes Python)
+
+### Configuração do Banco de Dados
+1. Crie um banco de dados PostgreSQL chamado `finplan_db`
+2. Crie um usuário `finplan_user` com senha `123` (ou altere no arquivo `app/config.py`)
+3. Configure as permissões necessárias
+
+### Instalação e Execução
 1. Clone o repositório
-2. Instale as dependências:
+2. Crie um ambiente virtual (recomendado):
+   ```
+   python -m venv venv
+   source venv/bin/activate  # Linux/Mac
+   venv\Scripts\activate     # Windows
+   ```
+3. Instale as dependências:
    ```
    pip install -r requirements.txt
    ```
-3. Execute a aplicação:
+4. Configure as variáveis de ambiente (copie `env.example` para `.env` e ajuste)
+5. Execute as migrações do banco:
+   ```
+   alembic upgrade head
+   ```
+6. Execute a aplicação:
    ```
    python run.py
    ```
-4. Acesse no navegador: `http://localhost:5000`
+7. Acesse no navegador: `http://localhost:5000`
+
+### Configuração de Produção
+Para produção, configure as seguintes variáveis de ambiente:
+- `SECRET_KEY`: Chave secreta para sessões
+- `DATABASE_URL`: URL de conexão com o banco de dados
+- `FLASK_ENV`: Defina como 'production'
 
 ## Scripts de Manutenção
 

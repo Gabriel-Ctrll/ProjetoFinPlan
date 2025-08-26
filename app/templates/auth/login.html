@@ -33,9 +33,23 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}" role="alert">
-                        {{ message }}
-                    </div>
+                    {% if category == 'error' %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ message }}
+                        </div>
+                    {% elif category == 'success' %}
+                        <div class="alert alert-success" role="alert">
+                            {{ message }}
+                        </div>
+                    {% elif category == 'warning' %}
+                        <div class="alert alert-warning" role="alert">
+                            {{ message }}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endif %}
                 {% endfor %}
             {% endif %}
         {% endwith %}
@@ -45,12 +59,26 @@
             {{ form.csrf_token }}
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                {{ form.email(class="form-control", id="email", required=true) }}
+                {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), id="email", required=true) }}
+                {% if form.email.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
 
             <div class="mb-3">
                 <label for="password" class="form-label">Senha</label>
-                {{ form.password(class="form-control", id="password", required=true) }}
+                {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), id="password", required=true) }}
+                {% if form.password.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.password.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
 
             <div class="mb-3 form-check">

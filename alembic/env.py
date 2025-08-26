@@ -20,7 +20,7 @@ import sys
 sys.path.append(os.getcwd())
 
 from app import create_app  # Importe a função create_app do seu projeto
-from app.models.models import db  # Importe o objeto SQLAlchemy
+from app.extensions import db  # Importe o objeto SQLAlchemy
 
 # Carregue a configuração do Flask
 app = create_app()

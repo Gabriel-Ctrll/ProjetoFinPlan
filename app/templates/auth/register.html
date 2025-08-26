@@ -13,20 +13,74 @@
     <div class="container d-flex justify-content-center align-items-center vh-100">
         <div class="card p-4 shadow" style="width: 400px;">
             <h2 class="text-center mb-4">Cadastro</h2>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category == 'error' %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ message }}
+                            </div>
+                        {% elif category == 'success' %}
+                            <div class="alert alert-success" role="alert">
+                                {{ message }}
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
             <form method="POST" action="{{ url_for('auth.register') }}">
                 {{ form.hidden_tag() }}
                 {{ form.csrf_token }}
                 <div class="mb-3">
                     <label for="username" class="form-label">Nome de Usuário</label>
-                    {{ form.username(class="form-control", id="username", required=true) }}
+                    {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), id="username", required=true) }}
+                    {% if form.username.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.username.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">E-mail</label>
-                    {{ form.email(class="form-control", id="email", required=true) }}
+                    {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), id="email", required=true) }}
+                    {% if form.email.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.email.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Senha</label>
-                    {{ form.password(class="form-control", id="password", required=true) }}
+                    {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), id="password", required=true) }}
+                    {% if form.password.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.password.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="form-text">A senha deve ter pelo menos 6 caracteres.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="confirm_password" class="form-label">Confirmar Senha</label>
+                    {{ form.confirm_password(class="form-control" + (" is-invalid" if form.confirm_password.errors else ""), id="confirm_password", required=true) }}
+                    {% if form.confirm_password.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.confirm_password.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
             </form>
