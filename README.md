@@ -71,25 +71,29 @@ flask run
 Acesse no navegador:
 👉 http://localhost:5000
 
-🖼️ Capturas de Tela
-Tela de login de usuário
+## 🖼️ Capturas de Tela
 
-Tela de cadastro
+**Tela de login de usuário**  
+![Login](docs/screenshots/login.png)
 
+**Tela de cadastro**  
+![Cadastro](docs/screenshots/cadastro.png)
 
-Cadastro e histórico de transações
+**Cadastro e histórico de transações**  
+![Transações](docs/screenshots/transacoes.png)
 
+**Gestão de categorias de receitas e despesas**  
+![Categorias](docs/screenshots/categorias.png)
 
-Gestão de categorias de receitas e despesas
+**Painel financeiro com gráficos e resumo**  
+![Dashboard](docs/screenshots/dashboard.png)
 
+**Tendências e recomendações automáticas**  
+![Análise 1](docs/screenshots/analise1.png)  
+![Análise 2](docs/screenshots/analise2.png)
 
-Painel financeiro com gráficos e resumo
+*(As imagens acima representam as telas reais do sistema.)*
 
-Tendências e recomendações automáticas
-
-
-
-(As imagens acima representam as telas reais do sistema.)
 
 🔒 Segurança
 Autenticação segura via Flask-Login
