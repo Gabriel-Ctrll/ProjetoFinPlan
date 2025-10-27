@@ -51,7 +51,6 @@ O projeto também serviu como um estudo prático de desenvolvimento **full-stack
 ## ⚙️ Instalação e Execução
 
 ### 1️⃣ Clonar o repositório
-```bash
 git clone https://github.com/Gabriel-Ctrll/ProjetoFinPlan.git
 cd ProjetoFinPlan
 2️⃣ Criar ambiente virtual
