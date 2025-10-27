@@ -71,26 +71,22 @@ flask run
 Acesse no navegador:
 👉 http://localhost:5000
 
-## 🖼️ Capturas de Tela
+🖼️ Capturas de Tela
+Tela de login de usuário
 
-**Tela de login de usuário**  
-![Login](docs/screenshots/login.png)
+Tela de cadastro
 
-**Tela de cadastro**  
-![Cadastro](docs/screenshots/cadastro.png)
 
-**Cadastro e histórico de transações**  
-![Transações](docs/screenshots/transacoes.png)
+Cadastro e histórico de transações
 
-**Gestão de categorias de receitas e despesas**  
-![Categorias](docs/screenshots/categorias.png)
 
-**Painel financeiro com gráficos e resumo**  
-![Dashboard](docs/screenshots/dashboard.png)
+Gestão de categorias de receitas e despesas
 
-**Tendências e recomendações automáticas**  
-![Análise 1](docs/screenshots/analise1.png)  
-![Análise 2](docs/screenshots/analise2.png)
+
+Painel financeiro com gráficos e resumo
+
+Tendências e recomendações automáticas
+
 
 
 (As imagens acima representam as telas reais do sistema.)
@@ -105,7 +101,7 @@ Proteção contra injeção SQL via SQLAlchemy ORM
 Sessões autenticadas e seguras
 
 📁 Estrutura do Projeto
-arduino
+bash
 Copiar código
 ProjetoFinPlan/
 │
@@ -171,8 +167,3 @@ Envie o push (git push origin minha-feature)
 Abra um Pull Request
 
 📌 FinPlan — Uma plataforma moderna para controle financeiro pessoal, com design limpo, código organizado e potencial para expansão com recursos de análise inteligente.
-
-
-
-
-
