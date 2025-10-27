@@ -1,198 +1,178 @@
-# FinPlan - Sistema de Gerenciamento Financeiro Pessoal
+# 💰 FinPlan — Plataforma de Gestão Financeira
 
-## Visão Geral
+**FinPlan** é uma aplicação web desenvolvida em **Python (Flask)** para **controle e análise financeira pessoal**, permitindo o gerenciamento de receitas, despesas e categorias, com **gráficos interativos**, **autenticação de usuários** e **insights automáticos baseados em tendências**.
 
-FinPlan é uma aplicação web para gerenciamento de finanças pessoais, desenvolvida com Python e Flask. O sistema permite que usuários registrem suas receitas e despesas, visualizem relatórios financeiros e acompanhem seu orçamento.
-
-## Estrutura do Projeto
-
-```
-ProjetoFinPlan/
-├── app/                          # Pasta principal da aplicação
-│   ├── __init__.py               # Inicialização da aplicação Flask
-│   ├── config.py                 # Configurações da aplicação
-│   ├── extensions.py             # Extensões Flask (db, login_manager, etc.)
-│   ├── blueprints/               # Blueprints (rotas e controllers)
-│   │   ├── auth/                 # Autenticação (login, registro)
-│   │   │   └── routes.py         # Rotas de autenticação
-│   │   └── main/                 # Funcionalidades principais
-│   │       └── routes.py         # Rotas principais da aplicação
-│   ├── forms/                    # Formulários Flask-WTF
-│   │   ├── auth_forms.py         # Formulários de autenticação
-│   │   └── transaction_forms.py  # Formulários de transações e categorias
-│   ├── models/                   # Modelos de dados (SQLAlchemy)
-│   │   ├── finance.py            # Modelos financeiros (Transaction, Category)
-│   │   └── user.py               # Modelo de usuário
-│   ├── static/                   # Arquivos estáticos
-│   │   ├── css/                  # Estilos CSS
-│   │   └── js/                   # Scripts JavaScript
-│   │       ├── app.js            # JavaScript global
-│   │       ├── dashboard.js      # Scripts do dashboard
-│   │       └── transactions.js   # Scripts de transações
-│   └── templates/                # Templates HTML (Jinja2)
-│       ├── auth/                 # Templates de autenticação
-│       ├── base.html             # Template base
-│       ├── dashboard.html        # Página principal de dashboard
-│       ├── transactions.html     # Página de transações
-│       └── categories.html       # Página de categorias
-├── run.py                        # Arquivo para iniciar a aplicação
-└── add_notes_column.py           # Script para adicionar coluna de notas
-```
-
-## Funcionalidades Principais
-
-### 1. Autenticação de Usuários
-- Registro de novos usuários
-- Login de usuários
-- Proteção de rotas (login_required)
-
-### 2. Gerenciamento de Transações
-- Cadastro de receitas e despesas
-- Categorização de transações
-- Visualização em tabela com filtragem
-- Exclusão de transações
-
-### 3. Gerenciamento de Categorias
-- Criação de categorias personalizadas
-- Classificação entre receitas e despesas
-- Exclusão de categorias (se não possuírem transações)
-
-### 4. Dashboard Financeiro
-- Resumo de receitas, despesas e saldo atual
-- Gráfico de distribuição de gastos por categoria
-- Gráfico de receitas vs despesas (últimos 6 meses)
-- Listagem das transações recentes
-
-## Tecnologias Utilizadas
-
-- **Backend**: Python, Flask
-- **Frontend**: HTML, CSS, JavaScript, Tailwind CSS
-- **Banco de Dados**: PostgreSQL/SQLAlchemy 
-- **Gráficos**: ApexCharts.js
-- **Autenticação**: Flask-Login
-- **Formulários**: Flask-WTF
-- **Machine Learning**: PyTorch
-- **Análise de Dados**: Pandas, NumPy
-
-## Modelos de Dados
-
-### User (Usuário)
-Representa um usuário do sistema.
-- `id`: Identificador único
-- `username`: Nome de usuário
-- `email`: Email do usuário (único)
-- `password_hash`: Hash da senha
-- `created_at`: Data de criação
-
-### Transaction (Transação)
-Representa uma transação financeira (receita ou despesa).
-- `id`: Identificador único
-- `user_id`: ID do usuário proprietário
-- `category_id`: ID da categoria
-- `amount`: Valor da transação 
-- `description`: Descrição da transação
-- `date`: Data da transação
-- `notes`: Observações (opcional)
-- `created_at`: Data de criação
-- `updated_at`: Data de atualização
-
-### Category (Categoria)
-Representa uma categoria para classificar transações.
-- `id`: Identificador único
-- `name`: Nome da categoria
-- `type`: Tipo ('income' ou 'expense')
-- `is_income`: Boolean indicando se é receita
-- `user_id`: ID do usuário proprietário
-
-## Rotas Principais
-
-### Autenticação
-- `/login`: Login de usuários
-- `/register`: Registro de novos usuários
-- `/logout`: Logout do usuário atual
-
-### Dashboard
-- `/dashboard`: Página principal do dashboard
-- `/dashboard/summary`: API para obter resumo financeiro
-- `/dashboard/financial_data`: API para dados do gráfico financeiro
-- `/dashboard/transactions_data`: API para listar transações recentes
-
-### Transações
-- `/transactions`: Listagem e cadastro de transações
-- `/transactions/data`: API para obter dados de transações
-- `/transactions/<id>/delete`: Rota para excluir uma transação
-
-### Categorias
-- `/categories`: Listagem e cadastro de categorias
-- `/categories/all`: API para obter todas as categorias
-- `/categories/data`: API para dados do gráfico de categorias
-- `/categories/<id>/delete`: Rota para excluir uma categoria
-
-## Como Executar o Projeto
-
-### Pré-requisitos
-- Python 3.8 ou superior
-- PostgreSQL instalado e configurado
-- pip (gerenciador de pacotes Python)
-
-### Configuração do Banco de Dados
-1. Crie um banco de dados PostgreSQL chamado `finplan_db`
-2. Crie um usuário `finplan_user` com senha `123` (ou altere no arquivo `app/config.py`)
-3. Configure as permissões necessárias
-
-### Instalação e Execução
-1. Clone o repositório
-2. Crie um ambiente virtual (recomendado):
-   ```
-   python -m venv venv
-   source venv/bin/activate  # Linux/Mac
-   venv\Scripts\activate     # Windows
-   ```
-3. Instale as dependências:
-   ```
-   pip install -r requirements.txt
-   ```
-4. Configure as variáveis de ambiente (copie `env.example` para `.env` e ajuste)
-5. Execute as migrações do banco:
-   ```
-   alembic upgrade head
-   ```
-6. Execute a aplicação:
-   ```
-   python run.py
-   ```
-7. Acesse no navegador: `http://localhost:5000`
-
-### Configuração de Produção
-Para produção, configure as seguintes variáveis de ambiente:
-- `SECRET_KEY`: Chave secreta para sessões
-- `DATABASE_URL`: URL de conexão com o banco de dados
-- `FLASK_ENV`: Defina como 'production'
-
-## Scripts de Manutenção
-
-- `add_notes_column.py`: Adiciona a coluna 'notes' à tabela de transações
-
-## Licença
-
-Este projeto está licenciado sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
-## Contato
-
-Se você tiver alguma dúvida ou sugestão, entre em contato:
-
-- **Nome:** Israel Ueda Massatoshi
-- **Nome:** Gabriel Araújo da Silva
-- **GitHub:** [israel_ueda](https://github.com/IsraelUeda)
-- **GitHub:** [Gabriel-Ctrll](https://github.com/Gabriel-Ctrll)
-
-## Agradecimentos
-
-- À equipe do Flask por fornecer uma estrutura incrível para desenvolvimento web.
-- À comunidade do Bootstrap por tornar o design acessível a todos.
-- Aos usuários do FinPlan por ajudarem a melhorar o projeto com feedbacks valiosos.
-<<<<<<< HEAD
+![Tela de Login](docs/screenshots/login.png)
 
 ---
-=======
->>>>>>> trabalho-antigo
+
+## 🚀 Funcionalidades Principais
+
+- 📊 **Dashboard financeiro** com resumo e gráficos dinâmicos  
+- 💵 **Cadastro e histórico de transações** (receitas e despesas)  
+- 🏷️ **Gestão de categorias personalizadas**  
+- 📅 **Análise mensal e previsão de tendências**  
+- 🧠 **Recomendações automáticas baseadas em IA**  
+- 👤 **Sistema de login e cadastro com autenticação segura**  
+- 📈 **Visualização de progresso financeiro e saldo total**
+
+---
+
+## 🧠 Objetivo do Projeto
+
+O FinPlan foi criado para ajudar usuários a **controlar e entender sua vida financeira** de forma intuitiva e acessível.  
+O projeto também serviu como um estudo prático de desenvolvimento **full-stack com Flask**, unindo backend, banco de dados e uma interface moderna.
+
+> “A ideia principal é simplificar o controle financeiro e transformar dados em decisões inteligentes.”
+
+---
+
+## 🧩 Tecnologias Utilizadas
+
+**Backend**
+- Python 3.10+
+- Flask
+- Flask-Login
+- SQLAlchemy
+- SQLite
+
+**Frontend**
+- HTML5, CSS3, JavaScript
+- Tailwind CSS
+- ApexCharts.js
+
+**Outros**
+- Jinja2 (templating)
+- dotenv (gerenciamento de variáveis de ambiente)
+- Werkzeug (segurança e hash de senhas)
+
+---
+
+## ⚙️ Instalação e Execução
+
+### 1️⃣ Clonar o repositório
+```bash
+git clone https://github.com/Gabriel-Ctrll/ProjetoFinPlan.git
+cd ProjetoFinPlan
+2️⃣ Criar ambiente virtual
+bash
+Copiar código
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
+3️⃣ Instalar dependências
+bash
+Copiar código
+pip install -r requirements.txt
+4️⃣ Rodar o servidor Flask
+bash
+Copiar código
+flask run
+Acesse no navegador:
+👉 http://localhost:5000
+
+## 🖼️ Capturas de Tela
+
+**Tela de login de usuário**  
+![Login](docs/screenshots/login.png)
+
+**Tela de cadastro**  
+![Cadastro](docs/screenshots/cadastro.png)
+
+**Cadastro e histórico de transações**  
+![Transações](docs/screenshots/transacoes.png)
+
+**Gestão de categorias de receitas e despesas**  
+![Categorias](docs/screenshots/categorias.png)
+
+**Painel financeiro com gráficos e resumo**  
+![Dashboard](docs/screenshots/dashboard.png)
+
+**Tendências e recomendações automáticas**  
+![Análise 1](docs/screenshots/analise1.png)  
+![Análise 2](docs/screenshots/analise2.png)
+
+
+(As imagens acima representam as telas reais do sistema.)
+
+🔒 Segurança
+Autenticação segura via Flask-Login
+
+Senhas criptografadas com hash SHA-256
+
+Proteção contra injeção SQL via SQLAlchemy ORM
+
+Sessões autenticadas e seguras
+
+📁 Estrutura do Projeto
+arduino
+Copiar código
+ProjetoFinPlan/
+│
+├── app/
+│   ├── __init__.py
+│   ├── models.py
+│   ├── routes.py
+│   ├── templates/
+│   └── static/
+│
+├── instance/
+│   └── database.db
+│
+├── .env.example
+├── requirements.txt
+├── README.md
+└── run.py
+🧭 Roadmap (Melhorias Futuras)
+📤 Exportar relatórios em PDF ou Excel
+
+📱 Interface 100% responsiva e mobile-friendly
+
+🌐 Deploy completo com banco remoto (Render ou Railway)
+
+📊 Dashboard com filtros por período e comparativos
+
+🤖 Recomendador financeiro com IA aprimorada
+
+👨‍💻 Autores
+Nome	Função	GitHub
+Israel Ueda Massatoshi	Backend & Frontend Developer	@IsraelUeda
+Gabriel Araújo da Silva	Full-Stack Developer	@Gabriel-Ctrll
+
+🪪 Licença
+Este projeto é licenciado sob a MIT License.
+
+🌐 Demonstração (opcional)
+(Quando o deploy estiver ativo)
+🔗 Acesse a versão online do FinPlan
+
+💡 Aprendizados
+Durante o desenvolvimento, foram explorados conceitos como:
+
+Estrutura modular de aplicações Flask
+
+Boas práticas de rotas, templates e banco de dados
+
+Integração de bibliotecas JavaScript para visualização de dados
+
+Design limpo e moderno com Tailwind CSS
+
+Autenticação, segurança e controle de sessão
+
+✨ Contribuição
+Faça um fork do repositório
+
+Crie uma branch (git checkout -b minha-feature)
+
+Faça commit das mudanças (git commit -m 'Adiciona nova feature')
+
+Envie o push (git push origin minha-feature)
+
+Abra um Pull Request
+
+📌 FinPlan — Uma plataforma moderna para controle financeiro pessoal, com design limpo, código organizado e potencial para expansão com recursos de análise inteligente.
+
+
+
+
+
